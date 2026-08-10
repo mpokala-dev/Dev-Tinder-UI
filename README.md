@@ -29,3 +29,12 @@ Tailwind CSS IntelliSense by Tailwind Labs
 This removes many false warnings and gives autocomplete for DaisyUI classes.
 
 - Add Navbar to App.jsx
+
+---
+
+- Seperate Navbar as a component and import Navbar to App.jsx
+- Install react router dom
+- create BrowserRouter > Routes > Route=/ Body {<Outlet/>}> children Route
+- Add Navbar into Body Component to give a fixed Navbar on any path
+- Add Outlet to Body Component for children
+- Create Footer component
