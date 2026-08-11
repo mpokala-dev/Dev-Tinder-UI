@@ -4,7 +4,7 @@ const UserCard = ({ userdata }) => {
   return (
     <div
       className="card bg-base-300 w-96 shadow-sm gap-6 my-5"
-      key={userdata._id}
+      id={userdata._id}
     >
       <figure className="max-h-90 min-h-50">
         <img src={userdata.photoUrl} alt="photo" />

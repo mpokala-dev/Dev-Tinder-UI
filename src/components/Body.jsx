@@ -12,38 +12,31 @@ const Body = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const userData = useSelector((state) => {
-    state.user;
-  });
+  const userData = useSelector((state) => state.user);
 
-  useEffect(() => {
-    const getUserDetails = async () => {
-      try {
-        const userInfo = await axios.get(BASE_URL + "/profile/view", {
-          withCredentials: true,
-        });
-        dispatch(addUser(userInfo.data));
-      } catch (error) {
-        if (
-          error?.response?.status === 401 ||
-          error?.response?.status === 400
-        ) {
-          //show toast with message
-          navigate("/login", { replace: true });
-        } else {
-          <ErrorPage error={error} />;
-        }
+  const getUserDetails = async () => {
+    if (userData) return;
+    try {
+      const userInfo = await axios.get(BASE_URL + "/profile/view", {
+        withCredentials: true,
+      });
+      dispatch(addUser(userInfo.data));
+    } catch (error) {
+      if (error?.response?.status === 401 || error?.response?.status === 400) {
+        //show toast with message
+        navigate("/login", { replace: true });
+      } else {
+        <ErrorPage error={error} />;
       }
-    };
-
-    if (!userData) {
-      getUserDetails();
     }
-  }, [dispatch, userData, navigate, location.pathname]);
+  };
+  useEffect(() => {
+    getUserDetails();
+  }, []);
 
   useEffect(() => {
     if (userData && location.pathname === "/login") {
-      navigate("/feed");
+      navigate("/");
     }
   }, [userData, location.pathname, navigate]);
   return (

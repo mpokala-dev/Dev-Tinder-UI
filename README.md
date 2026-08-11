@@ -94,3 +94,7 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 - clear the feed slice on logout and login
 - add { replace: true } option to navigate to replace the current entry in the history stack of navigation instead of adding a new one
 <!-- need to handle corner case - if user A logs in and hits /login in the url, and logs in user B => User B feed is shown but on click of navigation arrows of the browser, user A feed is displayed and Navbar profile is also pulling the data of user A -->
+- Handled the corner case - root cause if user is already logged in do not allow the user to login page -> redirect to Feed page
+- Corrected user data fetching from useSelector for user - updated from useSelector((state)=> {state.user}) to useSelector((state)=> state.user)
+
+---
