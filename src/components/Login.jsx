@@ -20,11 +20,11 @@ const Login = () => {
         { email, password },
         { withCredentials: true },
       );
+      setError("");
       dispatch(addUser(loginResponse.data));
       navigate("/feed");
-    } catch (error) {
-      console.error(error);
-      setError("Something went wrong");
+    } catch (err) {
+      setError(err?.response?.data?.message || "Something is wrong.");
     }
   };
 
@@ -33,6 +33,7 @@ const Login = () => {
       <div className="card bg-base-300 w-96 my-10 justify-center">
         <div className="card-body">
           <h2 className="card-title justify-center">LOGIN</h2>
+          {error && <p className="text-red-500">{error}</p>}
           <fieldset className="fieldset">
             <legend className="fieldset-legend">Email ID</legend>
             <label className="input validator">
@@ -56,7 +57,10 @@ const Login = () => {
                 type="email"
                 placeholder="mail@site.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setError("");
+                  setEmail(e.target.value);
+                }}
                 required
               />
             </label>
@@ -91,7 +95,10 @@ const Login = () => {
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setError("");
+                  setPassword(e.target.value);
+                }}
                 required
                 placeholder="Password"
                 minLength="8"

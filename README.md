@@ -80,3 +80,10 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 - Use useNavigate() to navigate to feed page once user logs in successfully
 
 ---
+
+- If the token is not present redirect the user to /login page
+    <pre>Unless the user is logged in do not allow redirect to any page(if not authenticated redirect to login page only)</pre>
+- On page refresh or on reload of the application, if the user is logged in once restore the user data in redux store so that user need not login again and again unless the token is expired or user logs out
+- <Link to="/profile"/> for profile
+- <Link to="/" /> on click of DevTinder
+- Logout functionality on Navbar Profile option
