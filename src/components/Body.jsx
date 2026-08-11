@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/userSlice";
+import ErrorPage from "./ErrorPage";
 
 const Body = () => {
   const navigate = useNavigate();
@@ -20,10 +21,11 @@ const Body = () => {
       });
       dispatch(addUser(userInfo.data));
     } catch (error) {
-      if (error.status === 401) {
-        navigate("/login");
+      if (error.status === 401 || error.status === 400) {
+        //show toast with message
+        navigate("/login", { replace: true });
       } else {
-        alert(error);
+        <ErrorPage error={error} />;
       }
     }
   };

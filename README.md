@@ -87,3 +87,10 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 - <Link to="/profile"/> for profile
 - <Link to="/" /> on click of DevTinder
 - Logout functionality on Navbar Profile option
+
+---
+
+- build user card on feed page
+- clear the feed slice on logout and login
+- add { replace: true } option to navigate to replace the current entry in the history stack of navigation instead of adding a new one
+<!-- need to handle corner case - if user A logs in and hits /login in the url, and logs in user B => User B feed is shown but on click of navigation arrows of the browser, user A feed is displayed and Navbar profile is also pulling the data of user A -->

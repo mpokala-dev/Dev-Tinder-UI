@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
+import { clearFeed } from "../utils/feedSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -22,7 +23,8 @@ const Login = () => {
       );
       setError("");
       dispatch(addUser(loginResponse.data));
-      navigate("/feed");
+      dispatch(clearFeed());
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err?.response?.data?.message || "Something is wrong.");
     }
