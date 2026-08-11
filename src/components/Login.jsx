@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
@@ -29,6 +29,12 @@ const Login = () => {
       setError(err?.response?.data?.message || "Something is wrong.");
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex justify-center">
