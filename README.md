@@ -101,3 +101,7 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 
 - Create Profile page where user can update and view his card details.
 - Intigrate Toaster to populate success or failure message
+
+---
+
+- Create Connections Page <!-- list out all friends -->
