@@ -105,3 +105,5 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 ---
 
 - Create Connections Page <!-- list out all friends -->
+- Create Connection Requests Page <!-- view all friend requests received -->
+- Implement request review API calls on Accept and Reject

@@ -40,9 +40,11 @@ const Body = () => {
     }
   }, [userData, location.pathname, navigate]);
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <Outlet />
+      <main className="flex-1 flex items-center justify-center">
+        <Outlet />
+      </main>
       <Footer />
     </div>
   );

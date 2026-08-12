@@ -1,6 +1,8 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 const UserCard = ({ userdata }) => {
+  const location = useLocation();
   return (
     <div
       className="card bg-base-300 w-96 shadow-sm gap-6 my-5"
@@ -13,22 +15,30 @@ const UserCard = ({ userdata }) => {
         <h2 className="card-title">
           {userdata?.firstName + " " + userdata?.lastName}
         </h2>
-        {userdata?.age && <p>{userdata.age} </p>}
-        {userdata?.gender && <p>{userdata.gender} </p>}
+        {userdata?.age && userdata?.gender && (
+          <p className="text justify-center">
+            {userdata.age} ● {userdata.gender}
+          </p>
+        )}
         <p>{userdata.about}</p>
         {userdata?.skills && (
           <div className="grid grid-cols-3 gap-2 mt-3 w-full">
             {userdata.skills.map((skill, index) => (
-              <span className="wrap-word-break whitespace-normal" key={index}>
+              <span
+                className="wrap-word-break whitespace-normal line-clamp-2"
+                key={index}
+              >
                 📌{skill}
               </span>
             ))}
           </div>
         )}
-        <div className="card-actions justify-center gap-3 mt-4">
-          <button className="btn btn-secondary">IGNORE</button>
-          <button className="btn btn-primary">INTERESTED</button>
-        </div>
+        {location.pathname !== "/profile" && (
+          <div className="card-actions justify-center gap-3 mt-4">
+            <button className="btn btn-secondary">IGNORE</button>
+            <button className="btn btn-primary">INTERESTED</button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import appStore from "./utils/appStore";
 import { Provider } from "react-redux";
 import Feed from "./components/Feed";
 import ErrorPage from "./components/ErrorPage";
+import ReviewRequests from "./components/ReviewRequests";
 
 function App() {
   return (
@@ -15,10 +16,11 @@ function App() {
         <BrowserRouter basename="/">
           <Routes>
             <Route path="/" element={<Body />}>
-              <Route path="/login" element={<Login />} />
               <Route path="/" element={<Feed />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/connections" element={<Connections />} />
+              <Route path="/review-requests" element={<ReviewRequests />} />
               <Route path="/error" element={<ErrorPage />} />
             </Route>
           </Routes>
