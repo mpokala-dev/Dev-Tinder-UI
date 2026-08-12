@@ -16,6 +16,15 @@ const UserCard = ({ userdata }) => {
         {userdata?.age && <p>{userdata.age} </p>}
         {userdata?.gender && <p>{userdata.gender} </p>}
         <p>{userdata.about}</p>
+        {userdata?.skills && (
+          <div className="grid grid-cols-3 gap-2 mt-3 w-full">
+            {userdata.skills.map((skill, index) => (
+              <span className="wrap-word-break whitespace-normal" key={index}>
+                📌{skill}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="card-actions justify-center gap-3 mt-4">
           <button className="btn btn-secondary">IGNORE</button>
           <button className="btn btn-primary">INTERESTED</button>

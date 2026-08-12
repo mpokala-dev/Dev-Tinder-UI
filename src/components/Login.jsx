@@ -41,7 +41,7 @@ const Login = () => {
       <div className="card bg-base-300 w-96 my-10 justify-center">
         <div className="card-body">
           <h2 className="card-title justify-center">LOGIN</h2>
-          {error && <p className="text-red-500">{error}</p>}
+          {error !== "" && <p className="text-red-500">{error}</p>}
           <fieldset className="fieldset">
             <legend className="fieldset-legend">Email ID</legend>
             <label className="input validator">

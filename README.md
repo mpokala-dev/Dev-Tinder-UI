@@ -98,3 +98,6 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 - Corrected user data fetching from useSelector for user - updated from useSelector((state)=> {state.user}) to useSelector((state)=> state.user)
 
 ---
+
+- Create Profile page where user can update and view his card details.
+- Intigrate Toaster to populate success or failure message
