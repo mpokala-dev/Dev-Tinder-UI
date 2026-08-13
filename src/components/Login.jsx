@@ -127,6 +127,12 @@ const Login = () => {
               Login
             </button>
           </div>
+          <p
+            className="m-auto cursor-pointer py-2"
+            onClick={() => navigate("/signup")}
+          >
+            New User? Signup Here
+          </p>
         </div>
       </div>
     </div>

@@ -107,3 +107,10 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 - Create Connections Page <!-- list out all friends -->
 - Create Connection Requests Page <!-- view all friend requests received -->
 - Implement request review API calls on Accept and Reject
+
+---
+
+- Ignore and interested API calls on connections page
+- Signup page
+
+<!-- Pending -- how do I show the user more than default limit cards when user came across first set of limit of user cards -->

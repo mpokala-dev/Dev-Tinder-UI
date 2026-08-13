@@ -1,14 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Toast from "./Toast";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 
 const ReviewRequests = () => {
   const [error, setError] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastStatus, setToastStatus] = useState("info");
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "info",
+  });
+  const toastTimer = useRef(null);
   const [reviewRequests, setReviewRequests] = useState(null);
+
+  const showToast = (message, type = "success") => {
+    if (toastTimer.current) {
+      clearTimeout(toastTimer.current);
+    }
+    setToast({ show: true, message, type });
+    toastTimer.current = setTimeout(() => {
+      setToast({
+        show: false,
+        message: "",
+        type: "info",
+      });
+    }, 5000);
+  };
 
   const handleRequestReview = async (status, _id) => {
     try {
@@ -17,25 +34,13 @@ const ReviewRequests = () => {
         {},
         { withCredentials: true },
       );
-      console.log(reviewRes);
       setReviewRequests((prev) =>
         prev.filter((reviewRequest) => reviewRequest._id !== _id),
       );
-      setToastMessage(reviewRes?.message);
-      setToastStatus("success");
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setToastMessage("");
-      }, 5000);
+
+      showToast(true, reviewRes?.data?.message, "success");
     } catch (err) {
-      setToastMessage(err?.response?.data?.message);
-      setToastStatus("error");
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setToastMessage("");
-      }, 5000);
+      showToast(true, err?.response?.data?.message, "error");
       setError(
         err?.response?.data?.message || "Something went crazy with review",
       );
@@ -51,41 +56,26 @@ const ReviewRequests = () => {
         },
       );
       setReviewRequests(reviewRequestsRes.data?.data);
-      setToastMessage(reviewRequestsRes.data?.message);
-      setToastStatus("success");
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setToastMessage("");
-      }, 5000);
+      showToast(true, reviewRequestsRes.data?.message, "success");
     } catch (err) {
-      setToastMessage(err?.response?.data?.message);
-      setToastStatus("error");
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setToastMessage("");
-      }, 5000);
+      showToast(true, err?.response?.data?.message, "error");
       setError(err?.response?.data?.message || "Something went crazy");
     }
   };
 
   useEffect(() => {
-    console.log(reviewRequests, toastMessage);
-  }, [reviewRequests, toastStatus]);
-  useEffect(() => {
     getReviewRequests();
   }, []);
   if (reviewRequests && reviewRequests.length == 0)
     return (
-      <h1 className="min-h-screen flex text-lg items-center justify-center">
+      <h1 className=" flex text-lg items-center justify-center">
         You have no pending requests to review (●'◡'●)
       </h1>
     );
 
   return (
     <div className=" grid justify-center p-4 gap-2">
-      {showToast && <Toast message={toastMessage} toatstType={toastStatus} />}
+      {toast.show && <Toast message={toast.message} toatstType={toast.type} />}
 
       <h1 className="text-lg text-center justify-center-safe">
         Requests Received (●'◡'●)
