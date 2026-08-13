@@ -114,3 +114,31 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 - Signup page
 
 <!-- Pending -- how do I show the user more than default limit cards when user came across first set of limit of user cards -->
+<!-- above issue is fixed with inifinite scrolling | can also be addressed with Lomre option -->
+<code>
+<!-- TODO if I do not use scroll but straight away ignore or reject the first card that shows up - infinite scroll concept is not working-->
+
+    <pre>
+        const feedRef = useRef(feed);
+        useEffect(() => { feedRef.current = feed; }, [feed]);
+    </pre>
+    <pre>
+        const getFeedAPI = async (pageParam = 1) => {
+            if (loading) return;
+            setLoading(true);
+            try {
+                const res = await axios.get(`${BASE_URL}/user/feed?page=${pageParam}&limit=${limit}`, { withCredentials: true });
+                const newData = res?.data?.data || [];
+                const merged = pageParam === 1 ? newData : [...(feedRef.current || []), ...newData];
+                dispatch(addFeed(merged));
+                if (newData.length < limit) setHasMore(false);
+            } catch (err) {
+                setError(err?.response?.data?.message || "Something is wrong.");
+            } finally {
+                setLoading(false);
+            }
+        };
+    </pre>
+
+<!-- the above work around is not working. it is triggering infinite API calls with continuous page increment -->
+</code>

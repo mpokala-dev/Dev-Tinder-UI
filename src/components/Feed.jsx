@@ -17,6 +17,11 @@ const Feed = () => {
   const toastTimer = useRef(null);
   const feed = useSelector((state) => state.feed);
   const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const sentinelRef = useRef(null);
+  const limit = 10;
 
   const showToast = (message, type = "success") => {
     if (toastTimer.current) {
@@ -28,32 +33,60 @@ const Feed = () => {
     }, 5000);
   };
 
-  const getFeedAPI = async () => {
-    if (feed) return;
+  const getFeedAPI = async (pageParam = 1) => {
+    if (loading) return;
     try {
-      const userFeed = await axios.get(BASE_URL + "/user/feed", {
-        withCredentials: true,
-      });
-      dispatch(addFeed(userFeed?.data?.data));
-      setFeedMsg(userFeed?.data?.message);
-      console.log("userFeed.data::", userFeed.data);
+      setLoading(true);
+      const res = await axios.get(
+        `${BASE_URL}/user/feed?page=${pageParam}&limit=${limit}`,
+        {
+          withCredentials: true,
+        },
+      );
+      const newData = res?.data?.data || [];
+      const userFeed =
+        pageParam === 1 ? newData : [...(feed || []), ...newData];
+      dispatch(addFeed(userFeed));
+      setFeedMsg(res?.data?.message);
+      if (newData.length < limit) setHasMore(false);
     } catch (err) {
       setError(err?.response?.data?.message || "Something is wrong.");
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
-    console.log("redux feed", feed);
-    getFeedAPI();
+    if (!feed || feed.length === 0) getFeedAPI(1);
   }, []);
-  if (feed && feed.length == 0)
-    return (
-      <div>
-        {toast.show && <Toast message={toast.message} toastType={toast.type} />}
-        <h1 className=" flex text-lg items-center justify-center">
-          No more users feed (●'◡'●)
-        </h1>
-      </div>
+
+  // intersection observer to load more
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && hasMore && !loading) {
+            const nextPage = page + 1;
+            setPage(nextPage);
+            getFeedAPI(nextPage);
+          }
+        });
+      },
+      { root: null, rootMargin: "200px", threshold: 0.1 },
     );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [page, hasMore, loading, feed]);
+
+  // if (feed?.length == 0)
+  //   return (
+  //     <div>
+  //       {toast.show && <Toast message={toast.message} toastType={toast.type} />}
+  //       <h1 className=" flex text-lg items-center justify-center">
+  //         No more users feed (●'◡'●)
+  //       </h1>
+  //     </div>
+  //   );
   return (
     feed && (
       <div className="min-h-screen flex flex-col items-center justify-center my-10">
@@ -68,6 +101,8 @@ const Feed = () => {
             onToast={showToast}
           />
         ))}
+        {loading && <p className="mt-4">Loading...</p>}
+        <div ref={sentinelRef} />
       </div>
     )
   );
