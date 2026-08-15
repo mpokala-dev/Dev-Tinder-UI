@@ -142,3 +142,80 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
 
 <!-- the above work around is not working. it is triggering infinite API calls with continuous page increment -->
 </code>
+
+# dotenv - backend
+
+- npm i dotenv --save
+- create a .env file at the root and save all secert keys like DB URL, port number, or JWT secret key etc.
+- require("dotenv").config() --> in App.js and add process.env.<VARIABLE_NAME>
+- donot forget to add .env to .gitignore
+
+# Deployment
+
+- Sign up on AWS
+- generate key-pair login key
+- Launch instance
+- Open GITBash > cd to where the secret_key.pem file is downloaded > chmod 400 "<secret_key>.pem"
+- > ssh -i "<secret_key>.pem" ubuntu@ec2-13-50-248-247.eu-north-1.compute.amazonaws.com
+- > install nvm for Nodejs installation (used MacOS nvm cmds cz windows is asking for Docker steps which again requires docker installation)=> <img src="./public/install_Nodejs_on_Instance.png" alt-text="documentation_image" />
+- nvm install 24.13.0 (// version in which the application is running in our local so that there are no surprise errors on the instance)
+- restart by exit
+- ssh -i "<secret_key>.pem" ubuntu@ec2-13-50-248-247.eu-north-1.compute.amazonaws.com (reconnect the instance)
+- verify node installation by giveing the cmd node -v which should give the version of what we installed
+- git clone "git hub HTTP CODE path" (clone DevTinder)
+  <img src="./public/github_Code_HTTPS.png" alt-text="git_clone_path_image" />
+
+- git clone "git hub HTTP CODE path" (clone DevTinder-UI)
+
+- ls (should list you frontend and backend folders)
+  DevTinder, DevTinder-UI
+- cd DevTinder-UI
+  - npm install
+  - npm run build (generates .dist folder with all the code changes compiled)
+  - > sudo apt update (to install and update the system dependencies of our OS(likely Ubuntu))
+  - > sudo apt install nginx
+  - > sudo systemctl start nginx
+  - > sudo systemctl enable nginx
+  - > sudo scp -r dist/\* /var/www/html/
+  - Enable port :80 of your instance on AWS > EC2 > instance > Security > Click in Security Groups > Edit inbound rules > and add 80 port for 0.0.0.0/0 and save rules
+  - now check the instance public ipv4 address with http(not https), the UI should be UP
+
+- cd DevTinder
+  - npm install
+  ## .env configuration in ec2 instance
+  - > sudo nano .env // to add env variables in production
+    <pre>
+        DB_URL="mongodb_url+with+password+credentials"
+        PORT=port_number
+        JWT_SECRET_KEY="JWT_Secret_KEY"
+    </pre>
+  - save changes
+  - allow ec2 public ipv4 address to be access mongodb by whitelisting the public ipv4 address in Data & Network access of MongoDB Atlas
+    <img src="./public/db_whitelisting.png" alt-text="db_whitelisting" />
+  - add port 3000 (or the port_number) that backend runs on to the ec2 security inbound as a Custom TCP
+  - npm install pm2 // to keep the backend application onine 24/7
+  - pm2 start <b>npm -- start</b> // <b> command for pm2 to start in the background</b>
+  - pm2 logs // fetch the logs and errors on backend application
+  - pm2 flush npm // npm is the default name taken for the application process to run by the pm2, flush command clears/deletes all the logs so far
+  - pm2 list // lists all the processess running along with their application name and status<running|stopped>
+  - pm2 stop npm // npm is the application name(which is default taken by pm2), stop cmd stops the process with the name npm
+  - pm2 delete npm // deletes the process with name npm
+  - pm2 start <b>npm</b> --name "devtinder-backend" <b>-- start</b> // starts the process with name devtinder-backend with the command <b>npm start</b>
+  ## Nginx configuration
+  - now edit the nginx config to allow or bypass or proxy pass http://localhost:3000 to /api
+    - first move to the root, i.e., out of DevTinder // cd
+    - > sudo nano /etc/nginx/sites-available/default
+    - add below lines to nginx configuration
+       <pre><code>
+            server_name 13.50.248.247; # Public IPv4 address of EC2 instance
+            location /api/ {
+                proxy_pass http://localhost:3000/;  # Pass the request to the Node.js app
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+            }
+        </code></pre>
+    - restart nginx
+      > sudo systemctl restart nginx
