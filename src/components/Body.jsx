@@ -7,6 +7,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/userSlice";
 import ErrorPage from "./ErrorPage";
+import ToastContainer from "./ToastContainer";
 
 const Body = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const Body = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      <ToastContainer />
       <main className="flex-1 flex items-center justify-center">
         <Outlet />
       </main>

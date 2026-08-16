@@ -2,30 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import Toast from "./Toast";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
+import { showToast } from "../utils/toastGlobalSlice";
+import { useDispatch } from "react-redux";
 
 const ReviewRequests = () => {
   const [error, setError] = useState("");
-  const [toast, setToast] = useState({
-    show: false,
-    message: "",
-    type: "info",
-  });
   const toastTimer = useRef(null);
   const [reviewRequests, setReviewRequests] = useState(null);
-
-  const showToast = (message, type = "success") => {
-    if (toastTimer.current) {
-      clearTimeout(toastTimer.current);
-    }
-    setToast({ show: true, message, type });
-    toastTimer.current = setTimeout(() => {
-      setToast({
-        show: false,
-        message: "",
-        type: "info",
-      });
-    }, 5000);
-  };
+  const dispacth = useDispatch();
 
   const handleRequestReview = async (status, _id) => {
     try {
@@ -38,9 +22,13 @@ const ReviewRequests = () => {
         prev.filter((reviewRequest) => reviewRequest._id !== _id),
       );
 
-      showToast(true, reviewRes?.data?.message, "success");
+      dispacth(
+        showToast({ message: reviewRes?.data?.message, type: "success" }),
+      );
     } catch (err) {
-      showToast(true, err?.response?.data?.message, "error");
+      dispacth(
+        showToast({ message: err?.response?.data?.message, type: "error" }),
+      );
       setError(
         err?.response?.data?.message || "Something went crazy with review",
       );
@@ -56,9 +44,16 @@ const ReviewRequests = () => {
         },
       );
       setReviewRequests(reviewRequestsRes.data?.data);
-      showToast(true, reviewRequestsRes.data?.message, "success");
+      dispacth(
+        showToast({
+          message: reviewRequestsRes.data?.message,
+          type: "success",
+        }),
+      );
     } catch (err) {
-      showToast(true, err?.response?.data?.message, "error");
+      dispacth(
+        showToast({ message: err?.response?.data?.message, type: "error" }),
+      );
       setError(err?.response?.data?.message || "Something went crazy");
     }
   };
@@ -75,8 +70,6 @@ const ReviewRequests = () => {
 
   return (
     <div className=" grid justify-center p-4 gap-2">
-      {toast.show && <Toast message={toast.message} toatstType={toast.type} />}
-
       <h1 className="text-lg text-center justify-center-safe">
         Requests Received (●'◡'●)
       </h1>

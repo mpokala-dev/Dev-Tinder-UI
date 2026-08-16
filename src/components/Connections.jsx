@@ -1,41 +1,41 @@
 import React, { useEffect, useState } from "react";
-import Toast from "./Toast";
+// import Toast from "./Toast";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
+import ErrorPage from "./ErrorPage";
+import { showToast } from "../utils/toastGlobalSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Connections = () => {
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastStatus, setToastStatus] = useState("info");
+  const toast = useSelector((state) => state.globalToast.toast);
   const [connections, setConnections] = useState(null);
   const getConnections = async () => {
     try {
       const connectionsRes = await axios.get(BASE_URL + "/user/connections", {
         withCredentials: true,
       });
+      dispatch(
+        showToast({ message: connectionsRes.data?.message, type: "success" }),
+      );
       setConnections(connectionsRes.data?.data);
-      setToastMessage(connectionsRes.data?.message);
-      setToastStatus("success");
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setToastMessage("");
-      }, 5000);
     } catch (err) {
-      setToastMessage(err?.response?.data?.message);
-      setToastStatus("error");
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setToastMessage("");
-      }, 5000);
+      dispatch(
+        showToast({
+          message: err?.response?.data?.message || "Something went wrong",
+          type: "error",
+        }),
+      );
       setError(err?.response?.data?.message || "Something went crazy");
+      if (err?.response?.status === 401 || err?.response?.status === 400) {
+        //show toast with message
+        navigate("/login", { replace: true });
+      } else {
+        <ErrorPage error={err.response?.data} />;
+      }
     }
   };
-  useEffect(() => {
-    console.log(connections, toastMessage);
-  }, [connections, toastStatus]);
   useEffect(() => {
     getConnections();
   }, []);
@@ -47,11 +47,12 @@ const Connections = () => {
     );
   return (
     <div className=" grid justify-center p-4 gap-2">
-      {showToast && <Toast message={toastMessage} toatstType={toastStatus} />}
-
-      <h1 className="text-lg text-center justify-center-safe">
-        Your Connections (●'◡'●)
-      </h1>
+      {/* {toast.show && <Toast message={toast.message} toatstType={toast.type} />} */}
+      {connections && (
+        <h1 className="text-lg text-center justify-center-safe">
+          Your Connections (●'◡'●)
+        </h1>
+      )}
       {connections?.map((connection) => {
         const { _id, firstName, lastName, age, gender, photoUrl, about } =
           connection;
