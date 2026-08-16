@@ -216,6 +216,9 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
                 proxy_set_header Host $host;
                 proxy_cache_bypass $http_upgrade;
             }
+            location / {
+                try_files $uri $uri/ /index.html; # helps the route path for nginx to redirect to /index.html if given route not found(refresh scenario)
+            }
         </code></pre>
     - restart nginx
       > sudo systemctl restart nginx
