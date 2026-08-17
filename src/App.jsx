@@ -9,6 +9,7 @@ import Feed from "./components/Feed";
 import ErrorPage from "./components/ErrorPage";
 import ReviewRequests from "./components/ReviewRequests";
 import Signup from "./components/Signup";
+import Chat from "./components/Chat";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/connections" element={<Connections />} />
               <Route path="/review-requests" element={<ReviewRequests />} />
+              <Route path="/chat/:targetUserId" element={<Chat />} />
               <Route path="/error" element={<ErrorPage />} />
             </Route>
           </Routes>

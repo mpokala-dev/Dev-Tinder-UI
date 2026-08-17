@@ -5,12 +5,19 @@ import { BASE_URL } from "../utils/constants";
 import ErrorPage from "./ErrorPage";
 import { showToast } from "../utils/toastGlobalSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Connections = () => {
   const dispatch = useDispatch();
   const [error, setError] = useState("");
   const toast = useSelector((state) => state.globalToast.toast);
   const [connections, setConnections] = useState(null);
+  const navigate = useNavigate();
+
+  const handleChatClick = (chatUserId) => {
+    navigate("/chat/" + chatUserId);
+  };
+
   const getConnections = async () => {
     try {
       const connectionsRes = await axios.get(BASE_URL + "/user/connections", {
@@ -39,6 +46,7 @@ const Connections = () => {
   useEffect(() => {
     getConnections();
   }, []);
+
   if (connections && connections.length == 0)
     return (
       <h1 className="text-lg justify-center-safe">
@@ -82,6 +90,14 @@ const Connections = () => {
                   <p className="wrap-break-word whitespace-normal line-clamp-3 max-w-full">
                     {about}
                   </p>
+                </div>
+                <div className="text-right mx-4">
+                  <button
+                    className="btn btn-xs sm:btn-sm md:btn-md btn-outline"
+                    onClick={() => handleChatClick(_id)}
+                  >
+                    Chat
+                  </button>
                 </div>
               </div>
             </div>

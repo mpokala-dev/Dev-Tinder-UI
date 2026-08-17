@@ -222,3 +222,73 @@ This removes many false warnings and gives autocomplete for DaisyUI classes.
         </code></pre>
     - restart nginx
       > sudo systemctl restart nginx
+
+# Realtime chat using websocket (socket.io)
+
+- Build UI template for a chat window (Chat.jsx) on /chat/:targetUserId
+- Setup socket.io in the backend(Server API)
+  <code>npm i socket.io</code>
+- <pre><code>
+    # in the App.js where const app = express(); write below code
+        const http = require("http");
+  
+        const server = http.createServer(app) # after this line, make sure to change app.listen() to server.listen(), rest all remains same as app.use()
+        const {Server} = require("socket.io");
+        const io = new Server(server,{# these are options
+                                         cors:{
+                                                origin: "frontend url"
+                                            }
+                                        });
+        io.on("connection", (socket)=>{
+            socket.on("joinchat", (userId, targetUSerID, additional details if needed) => {
+                console.log("joined chat");
+                const roomId = [userId,targetUSerID].sort()..join("$);
+                socket.join(roomId);
+            });
+            socket.on("sendmessage", (userId, targetUSerID, text, additional details if needed) => {
+                const roomId = [userId,targetUSerID].sort().join("$);
+                io.to(roomId).emit("messageReceived",{userId,targetUSerID, text})
+            });
+            socket.on("disconnect", () => {});
+        })
+    </code></pre>
+
+- Setup socket.io-client in the frontend(Client API)
+  <code>npm i socket.io-client</code>
+- Create seperate file in utils for creating socket connection with the backend
+    <pre><code>
+    import { io } from "socket.io-client";
+  
+    export const createSocketConnection = () => {
+        return io("backend url);
+    }
+  
+    we need to create the socket connection on mount/ on load of the chat component
+    useEffect(()=>{
+        const socket = createSocketConnection();
+        socket.emit("joinchat", {userID,targetUserId,....})
+        return ()=>{
+            socket.disconnect();
+        }
+    },[])</code></pre>
+
+- Write event listeners for sockets (sendMessage, messageReceived, disconnect .....)
+- production config to handle /socket.io as /api/socket.io for backend api calls # /socket.io/ is the default path for web-sockets
+    <pre><code>
+    export const createSocketConnection = () => {
+        return (location.hostname === "localhost" ? io(BASE_URL) : io("/", path:"/api/socket.io/")); # here / is the public ipv4 address or the domain name
+    }
+    </code></pre>
+
+- nginx configuration for /chat
+    <pre>
+        Frontend => publicIPV4/
+        Backend => publicIPV4/api # /api for http://localhost:3000
+        nginx socket proxy_pass => for /chat
+  </pre>
+  ####TODO####
+- Limit the message history on initial load(do lazy loading with infinite scroll as we go on seeing the message history)
+- Update the message sent time on messages dynamic
+- only friend should be able to chat (userID && targetUserId are status accepted)
+- loggedin user should not be able to send message to non-friends any messages -- validations on backend
+- Build online | lastseen feature

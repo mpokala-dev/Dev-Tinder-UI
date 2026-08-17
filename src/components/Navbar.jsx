@@ -49,7 +49,6 @@ const Navbar = () => {
               <li>
                 <Link to="/profile" className="justify-between">
                   Profile
-                  <span className="badge">New</span>
                 </Link>
               </li>
               <li>
@@ -60,6 +59,15 @@ const Navbar = () => {
               <li>
                 <Link to="/review-requests" className="justify-between">
                   Friend Requests
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/chat/" + loggedinUser._id}
+                  className="justify-between"
+                >
+                  Chat
+                  <span className="badge">New</span>
                 </Link>
               </li>
               <li>
