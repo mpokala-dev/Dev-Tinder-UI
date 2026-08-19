@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useOptimistic,
+  startTransition,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { removeUserFromFeed } from "../utils/feedSlice";
@@ -7,23 +12,38 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 
 const UserCard = ({ userdata, onToast }) => {
+  const [isRemoved, setIsRemoved] = useOptimistic(false);
   const location = useLocation();
   const feedConnections = useSelector((state) => state.feed);
   const dispatch = useDispatch();
 
-  const handleSendRequest = async (status, _id) => {
-    try {
-      const feedRes = await axios.post(
-        BASE_URL + "/request/send/" + status + "/" + _id,
-        {},
-        { withCredentials: true },
-      );
-      onToast(feedRes?.data?.message, "success");
-      dispatch(removeUserFromFeed(_id));
-    } catch (err) {
-      onToast(err?.response?.data?.message || "Something went wrong", "error");
-    }
+  const handleSendRequest = (status, _id) => {
+    startTransition(async () => {
+      setIsRemoved(true);
+      try {
+        const feedRes = await axios.post(
+          BASE_URL + "/request/send/" + status + "/" + _id,
+          {},
+          { withCredentials: true },
+        );
+        onToast(feedRes?.data?.message, "success");
+        // await new Promise(() =>
+        //   setTimeout(() => {
+        //     dispatch(removeUserFromFeed(_id));
+        //   }, 5000),
+        // );
+        dispatch(removeUserFromFeed(_id));
+      } catch (err) {
+        onToast(
+          err?.response?.data?.message || "Something went wrong",
+          "error",
+        );
+      }
+    });
   };
+  if (isRemoved) {
+    return null;
+  }
 
   return (
     <div>
