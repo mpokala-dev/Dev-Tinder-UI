@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [userDetails, setUserDetails] = useState({
@@ -208,12 +208,9 @@ const Signup = () => {
               Sign Up
             </button>
           </div>
-          <p
-            className="m-auto cursor-pointer py-2"
-            onClick={() => navigate("/login")}
-          >
+          <Link className="m-auto cursor-pointer py-2" to={"/login"}>
             Existing User? Login Here
-          </p>
+          </Link>
         </div>
       </div>
     </div>

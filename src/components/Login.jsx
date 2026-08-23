@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { clearFeed } from "../utils/feedSlice";
 
@@ -127,12 +127,9 @@ const Login = () => {
               Login
             </button>
           </div>
-          <p
-            className="m-auto cursor-pointer py-2"
-            onClick={() => navigate("/signup")}
-          >
+          <Link className="m-auto cursor-pointer py-2" to={"/signup"}>
             New User? Signup Here
-          </p>
+          </Link>
         </div>
       </div>
     </div>
