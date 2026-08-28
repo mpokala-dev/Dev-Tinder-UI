@@ -11,6 +11,7 @@ import ErrorPage from "./components/ErrorPage";
 import ReviewRequests from "./components/ReviewRequests";
 import Signup from "./components/Signup";
 import Chat from "./components/Chat";
+import Test from "./test";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Routes>
               <Route path="/signup" element={<Signup />} />
               <Route path="/" element={<Body />}>
+                <Route path="/test" element={<Test />} />
                 <Route path="/" element={<Feed />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/profile" element={<Profile />} />
