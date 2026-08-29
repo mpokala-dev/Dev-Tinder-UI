@@ -1,32 +1,20 @@
-import React from "react";
+import { useMemo } from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { handleSearch } from "./utils/handleSerch";
 
 function Test() {
   const [products, setProducts] = useState([]);
-  const [searchProducts, setSearchProducts] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const searchProducts = useMemo(() => {
+    return handleSearch(products, searchInput);
+  }, [products, searchInput]);
 
-  const styles = {
-    main: {
-      padding: "20px",
-    },
-    title: {
-      color: "#5C6AC4",
-    },
-  };
-  const handleSearch = () => {
-    const queryList = products.filter((product) =>
-      product.title.toLowerCase().includes(searchInput.toLowerCase()),
-    );
-    setSearchProducts(queryList);
-  };
   const fectchData = async () => {
     try {
       const productsList = await axios.get("https://dummyjson.com/products");
       console.log(productsList);
       setProducts(productsList?.data?.products);
-      setSearchProducts(productsList?.data?.products);
     } catch (error) {
       console.log(error);
     }
@@ -44,15 +32,12 @@ function Test() {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
-        <button
-          className="mx-2 p-2 rounded-lg bg-green-200 cursor-pointer"
-          onClick={() => handleSearch()}
-        >
+        <button className="mx-2 p-2 rounded-lg bg-green-200 cursor-pointer">
           Search
         </button>
       </div>
       <div className="border rounded-lg flex flex-wrap flex-row gap-1">
-        {searchProducts.map((product) => {
+        {searchProducts?.map((product) => {
           const { id, title, description, images } = product;
           return (
             <div
