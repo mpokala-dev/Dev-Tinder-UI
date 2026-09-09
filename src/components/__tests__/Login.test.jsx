@@ -11,7 +11,7 @@ import { MemoryRouter, BrowserRouter, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import appStore from "../../utils/appStore";
 import axios from "axios";
-import { vi } from "vitest";
+import { expect, vi } from "vitest";
 
 vi.mock("axios");
 
@@ -42,7 +42,7 @@ describe("Login Component", () => {
     const loginBtn = screen.getByRole("button", { name: "Login" });
     expect(loginBtn).toBeInTheDocument();
   });
-  test("should fire email, password input change events and login button click event", () => {
+  test("should render Login/signup link andfire email, password input change events and login button click event", () => {
     render(
       <BrowserRouter>
         <Provider store={appStore}>
@@ -50,6 +50,9 @@ describe("Login Component", () => {
         </Provider>
       </BrowserRouter>,
     );
+    expect(
+      screen.getByRole("link", { name: "New User? Signup Here" }),
+    ).toBeInTheDocument();
     fireEvent.change(screen.getByPlaceholderText("mail@site.com"), {
       target: { value: "tony@avenger.com" },
     });
