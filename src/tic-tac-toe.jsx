@@ -1,24 +1,27 @@
-export function Square() {
-  return <button className="square">X</button>;
+const square = "btn btn-outline rounded-none";
+export function Square({ val }) {
+  return <button className={square}>{val}</button>;
 }
 
 export default function Board() {
   return (
     <>
-      <div className="board-row">
-        <button className="square">1</button>
-        <button className="square">2</button>
-        <button className="square">3</button>
-      </div>
-      <div className="board-row">
-        <button className="square">4</button>
-        <button className="square">5</button>
-        <button className="square">6</button>
-      </div>
-      <div className="board-row">
-        <button className="square">7</button>
-        <button className="square">8</button>
-        <button className="square">9</button>
+      <div className="grid">
+        <div>
+          <Square val={1} />
+          <Square val={2} />
+          <Square val={3} />
+        </div>
+        <div>
+          <Square val={4} />
+          <Square val={5} />
+          <Square val={6} />
+        </div>
+        <div>
+          <Square val={7} />
+          <Square val={8} />
+          <Square val={9} />
+        </div>
       </div>
     </>
   );
