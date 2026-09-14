@@ -1,6 +1,13 @@
 const square = "btn btn-outline rounded-none";
 export function Square({ val }) {
-  return <button className={square}>{val}</button>;
+  const handleClick = () => {
+    console.log("Clicked!");
+  };
+  return (
+    <button className={square} onClick={() => handleClick()}>
+      {val}
+    </button>
+  );
 }
 
 export default function Board() {
@@ -8,19 +15,19 @@ export default function Board() {
     <>
       <div className="grid">
         <div>
-          <Square val={1} />
-          <Square val={2} />
-          <Square val={3} />
+          <Square className="w-9" val={1} />
+          <Square className="w-9" val={2} />
+          <Square className="w-9" val={3} />
         </div>
         <div>
-          <Square val={4} />
-          <Square val={5} />
-          <Square val={6} />
+          <Square className="w-9" val={4} />
+          <Square className="w-9" val={5} />
+          <Square className="w-9" val={6} />
         </div>
         <div>
-          <Square val={7} />
-          <Square val={8} />
-          <Square val={9} />
+          <Square className="w-9" val={7} />
+          <Square className="w-9" val={8} />
+          <Square className="w-9" val={9} />
         </div>
       </div>
     </>
