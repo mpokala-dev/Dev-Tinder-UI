@@ -1,11 +1,14 @@
-const square = "btn btn-outline rounded-none";
-export function Square({ val }) {
+import { useState } from "react";
+
+const square = "btn btn-outline rounded-none w-9";
+export function Square() {
+  const [value, setValue] = useState(null);
   const handleClick = () => {
-    console.log("Clicked!");
+    setValue("X");
   };
   return (
-    <button className={square} onClick={() => handleClick()}>
-      {val}
+    <button className={square} onClick={handleClick}>
+      {value}
     </button>
   );
 }
@@ -15,19 +18,19 @@ export default function Board() {
     <>
       <div className="grid">
         <div>
-          <Square className="w-9" val={1} />
-          <Square className="w-9" val={2} />
-          <Square className="w-9" val={3} />
+          <Square />
+          <Square />
+          <Square />
         </div>
         <div>
-          <Square className="w-9" val={4} />
-          <Square className="w-9" val={5} />
-          <Square className="w-9" val={6} />
+          <Square />
+          <Square />
+          <Square />
         </div>
         <div>
-          <Square className="w-9" val={7} />
-          <Square className="w-9" val={8} />
-          <Square className="w-9" val={9} />
+          <Square />
+          <Square />
+          <Square />
         </div>
       </div>
     </>
